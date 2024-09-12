@@ -1,3 +1,5 @@
+Projeyi görüntülemek için [bu bağlantıya](https://abdulkadir-erdeger.github.io/create-xapi-url/) tıklayın.
+
 # URL Üretici Arayüz
 
 Bu proje, kullanıcıların çeşitli bilgileri girerek URL'ler oluşturmasını sağlayan bir web arayüzü sunar. HTML, CSS (Bootstrap) ve JavaScript kullanılarak hazırlanmıştır.
