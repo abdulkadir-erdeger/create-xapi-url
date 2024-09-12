@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>URL Generator</title>
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      .container {
+        max-width: 600px;
+        margin-top: 50px;
+      }
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1 class="text-center">Articulate RISE 360 XAPI URL Generator</h1>
+      <form id="urlForm">
+        <div class="form-group">
+          <label for="baseUrl">Base URL</label>
+          <input
+            type="text"
+            class="form-control"
+            id="baseUrl"
+            placeholder="Enter base URL"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="endpoint">Endpoint</label>
+          <input
+            type="text"
+            class="form-control"
+            id="endpoint"
+            placeholder="Enter endpoint"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="key">Key</label>
+          <input
+            type="text"
+            class="form-control"
+            id="key"
+            placeholder="Enter key"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="secret">Secret</label>
+          <input
+            type="text"
+            class="form-control"
+            id="secret"
+            placeholder="Enter secret"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="actorName">Actor Name</label>
+          <input
+            type="text"
+            class="form-control"
+            id="actorName"
+            placeholder="Enter actor name"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="actorMbox">Actor Mbox</label>
+          <input
+            type="text"
+            class="form-control"
+            id="actorMbox"
+            placeholder="Enter actor mbox"
+            required
+          />
+        </div>
+        <button type="submit" class="btn btn-primary">Generate URL</button>
+      </form>
+      <div class="form-group mt-4">
+        <label for="generatedUrl">Generated URL</label>
+        <input type="text" class="form-control" id="generatedUrl" readonly />
+      </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+      function encodeAuthHeader(key, secret) {
+        const credentials = `${key}:${secret}`;
+        const encodedCredentials = btoa(credentials);
+        return `Basic ${encodedCredentials}`;
+      }
+
+      function createLaunchUrl(baseUrl, endpoint, key, secret, actor) {
+        const auth = encodeAuthHeader(key, secret);
+        const encodedEndpoint = encodeURIComponent(endpoint);
+        const encodedAuth = auth;
+        const encodedActor = encodeURIComponent(JSON.stringify(actor));
+        const url = `${baseUrl}?endpoint=${encodedEndpoint}&auth=${encodedAuth}&actor=${encodedActor}`;
+        return url;
+      }
+
+      function formatMbox(mbox) {
+        if (!mbox.startsWith("mailto:")) {
+          return "mailto:" + mbox;
+        }
+        return mbox;
+      }
+
+      document
+        .getElementById("urlForm")
+        .addEventListener("submit", function (event) {
+          event.preventDefault();
+
+          const baseUrl = document.getElementById("baseUrl").value;
+          const endpoint = document.getElementById("endpoint").value;
+          const key = document.getElementById("key").value;
+          const secret = document.getElementById("secret").value;
+          const actorName = document.getElementById("actorName").value;
+          const actorMbox = formatMbox(
+            document.getElementById("actorMbox").value
+          );
+
+          const actor = {
+            name: [actorName],
+            mbox: [actorMbox],
+          };
+
+          const launchUrl = createLaunchUrl(
+            baseUrl,
+            endpoint,
+            key,
+            secret,
+            actor
+          );
+          document.getElementById("generatedUrl").value = launchUrl;
+        });
+    </script>
+  </body>
+</html>
